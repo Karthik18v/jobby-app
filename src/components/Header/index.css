@@ -1,0 +1,20 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 30px;
+  background-color: #202020;
+  color: white;
+  height: 10vh;
+}
+.header-items {
+  list-style-type: none;
+  text-decoration: none;
+  display: flex;
+  gap: 20px;
+  font-weight: 500;
+}
+.header-logo {
+  height: 30px;
+  width: 100px;
+}
