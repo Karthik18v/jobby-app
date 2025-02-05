@@ -1,9 +1,18 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {IoLocationSharp} from 'react-icons/io5'
+import {IoLocation} from 'react-icons/io5'
+import {FaSuitcaseRolling} from 'react-icons/fa'
+import {Link} from 'react-router-dom'
 
 import Header from '../Header'
 import './index.css'
+
+const apiConstants = {
+  initial: 'INITIAL',
+  pending: 'PENDING',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+}
 
 class Jobs extends Component {
   state = {
@@ -12,10 +21,16 @@ class Jobs extends Component {
     employeeType: [],
     selectedSalaryRange: '10LPA',
     searchQuery: '', // Added state for search query
+    profileDataApiStatus: apiConstants.initial,
+    jobsDataApiStatus: apiConstants.initial,
   }
 
   componentDidMount() {
     this.fetchData()
+    this.setState({
+      profileDataApiStatus: apiConstants.pending,
+      jobsDataApiStatus: apiConstants.pending,
+    })
   }
 
   // Debounced method to handle employee type changes
@@ -49,9 +64,13 @@ class Jobs extends Component {
         throw new Error('Failed to fetch profile data')
       }
       const data = await response.json()
-      this.setState({profileData: data.profile_details})
+      this.setState({
+        profileData: data.profile_details,
+        profileDataApiStatus: apiConstants.success,
+      })
     } catch (error) {
       console.error('Error fetching profile data:', error)
+      this.setState({profileDataApiStatus: apiConstants.failure})
     }
   }
 
@@ -82,9 +101,13 @@ class Jobs extends Component {
         throw new Error('Failed to fetch Jobs data')
       }
       const data = await response.json()
-      this.setState({jobList: data.jobs || []}) // Ensure jobList is always an array
+      this.setState({
+        jobList: data.jobs || [],
+        jobsDataApiStatus: apiConstants.success,
+      }) // Ensure jobList is always an array
     } catch (error) {
       console.error('Error fetching Jobs data:', error)
+      this.setState({jobsDataApiStatus: apiConstants.failure})
     }
   }
 
@@ -101,14 +124,121 @@ class Jobs extends Component {
     this.getJobsDetails()
   }
 
+  renderSuccessfulProfile = () => {
+    const {profileData} = this.state
+    return (
+      <div className="profile-container">
+        <img
+          className="profile-img"
+          src={profileData.profile_image_url}
+          alt="profile"
+        />
+        <h1 className="profile-name">{profileData.name}</h1>
+        <p className="profile-role">{profileData.short_bio}</p>
+      </div>
+    )
+  }
+
+  renderFailureProfile = () => (
+    <button type="button" className="failure-btn">
+      Retry
+    </button>
+  )
+
+  renderPendingProfile = () => <p>Loading...</p>
+
+  renderProfile = () => {
+    const {profileDataApiStatus} = this.state
+    console.log(profileDataApiStatus)
+    switch (profileDataApiStatus) {
+      case apiConstants.pending:
+        return this.renderPendingProfile()
+      case apiConstants.success:
+        return this.renderSuccessfulProfile()
+      case apiConstants.failure:
+        return this.renderFailureProfile()
+      default:
+        return null
+    }
+  }
+
+  renderJobSuccessView = () => {
+    const {jobList} = this.state
+    return (
+      <ul className="jobs">
+        {jobList.map(job => (
+          <Link to={`jobs/${job.id}`} style={{textDecoration: 'none'}}>
+            <li key={job.id}>
+              <div className="job-card">
+                <div className="job-heading">
+                  <img
+                    className="job-card-logo"
+                    src={job.company_logo_url}
+                    alt="company logo"
+                  />
+                  <div className="job-card-title-rating">
+                    <p className="job-card-title">{job.title}</p>
+                    <p className="job-card-rating">&#9733; {job.rating}</p>
+                  </div>
+                </div>
+                <div className="job-type-desc">
+                  <div className="job-type-location-type">
+                    <p>
+                      <IoLocation />
+                      {job.location}
+                    </p>
+                    <p>
+                      <FaSuitcaseRolling />
+                      {job.employment_type}
+                    </p>
+                  </div>
+                  <p>{job.package_per_annum}</p>
+                </div>
+                <hr />
+                <div className="job-card-description">
+                  <p>
+                    <strong>Job Description</strong>
+                  </p>
+                  <p>{job.job_description}</p>
+                </div>
+              </div>
+            </li>
+          </Link>
+        ))}
+      </ul>
+    )
+  }
+
+  renderJobFailureView = () => (
+    <div className="job-failure-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
+        alt="failure view"
+        className="failure-img"
+      />
+      <h1>Oops Something Went Wrong</h1>
+      <p>We cannot seem to find the page you are looking for.</p>
+      <button type="button" className="failure-btn">
+        Retry
+      </button>
+    </div>
+  )
+
+  renderJobView = () => {
+    const {jobsDataApiStatus} = this.state
+    switch (jobsDataApiStatus) {
+      case apiConstants.success:
+        return this.renderJobSuccessView()
+      case apiConstants.failure:
+        return this.renderJobFailureView()
+
+      default:
+        return null
+    }
+  }
+
   render() {
-    const {
-      profileData,
-      jobList,
-      employeeType,
-      selectedSalaryRange,
-      searchQuery,
-    } = this.state
+    const {jobList, employeeType, selectedSalaryRange, searchQuery} = this.state
     console.log(jobList)
 
     return (
@@ -116,20 +246,7 @@ class Jobs extends Component {
         <Header />
         <div className="job-container">
           <div className="profile-and-filters-container">
-            {profileData ? (
-              <div className="profile-container">
-                <img
-                  className="profile-img"
-                  src={profileData.profile_image_url}
-                  alt="profile"
-                />
-                <h1 className="profile-name">{profileData.name}</h1>
-                <p className="profile-role">{profileData.short_bio}</p>
-              </div>
-            ) : (
-              <p>Loading profile...</p>
-            )}
-
+            {this.renderProfile()}
             {/* Employment Type Filters */}
             <div className="employment-types">
               <h5>Employment Type</h5>
@@ -146,7 +263,6 @@ class Jobs extends Component {
                 </div>
               ))}
             </div>
-
             {/* Salary Range Filters */}
             <div className="salary-range">
               <h3>Salary Range</h3>
@@ -200,33 +316,7 @@ class Jobs extends Component {
               className="job-search"
               value={searchQuery}
             />
-            <ul className="jobs">
-              {jobList.map(job => (
-                <li key={job.id}>
-                  <div className="job-card">
-                    <div className="job-heading">
-                      <img
-                        className="job-card-logo"
-                        src={job.company_logo_url}
-                        alt="company logo"
-                      />
-                      <div className="job-card-title-rating">
-                        <p className="job-card-title">{job.title}</p>
-                        <p className="job-card-rating">&#9733; {job.rating}</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="job-type-desc">
-                      <div className="job-type-location-type">
-                        <p>{job.location}</p>
-                        <p>{job.employment_type}</p>
-                      </div>
-                      <p>{job.package_per_annum}</p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {this.renderJobView()}
           </div>
         </div>
       </div>

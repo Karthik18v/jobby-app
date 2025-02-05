@@ -78,3 +78,18 @@
   display: flex;
   gap: 10px;
 }
+.failure-btn {
+  background-color: cornflowerblue;
+  border: 0px;
+  border-radius: 10px;
+  color: white;
+  padding: 10px 20px;
+}
+.failure-img {
+  height: 300px;
+}
+.job-failure-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
