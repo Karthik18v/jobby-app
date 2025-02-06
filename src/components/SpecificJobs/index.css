@@ -50,6 +50,7 @@ hr {
   grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
   gap: 10px; /* Space between columns */
 }
+
 .skill-item {
   display: flex;
   align-items: center;
@@ -70,4 +71,41 @@ hr {
 }
 .about-company-culture p {
   font-size: 28px;
+}
+.similar-jobs-container {
+  width: 90vw;
+  margin: auto;
+  color: white;
+  padding: 0px;
+}
+.similar-jobs {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: auto;
+}
+.similar-job-item {
+  background-color: #2c364c;
+  width: 30vw;
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 10px;
+}
+@media screen and (max-width: 576px) {
+  .skills-container {
+    grid-template-columns: repeat(2, 1fr); /* 3 equal columns */
+  }
+  .about-company-culture {
+    display: flex;
+    gap: 0px;
+    flex-direction: column;
+  }
+  .similar-job-item {
+    width: 90%;
+    margin-bottom: 20px;
+  }
 }

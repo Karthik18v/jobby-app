@@ -98,10 +98,38 @@ class SpecificJobs extends Component {
             <p>{jobData.life_at_company?.description}</p>
             <img src={jobData.life_at_company?.image_url} alt="company logo" />
           </div>
-          <h1>Similar Jobs</h1>
-          <ul>
+        </div>
+        <h1>Similar Jobs</h1>
+        <div className="similar-jobs-container">
+          <ul className="similar-jobs">
             {similarJobs.map(each => (
-              <li>Hello</li>
+              <li key={each.id}>
+                <div className="similar-job-item">
+                  <div className="job-heading">
+                    <img
+                      className="job-card-logo"
+                      src={each.company_logo_url}
+                      alt="company logo"
+                    />
+                    <div className="job-card-title-rating">
+                      <p className="job-card-title">{each.title}</p>
+                      <p className="job-card-rating">&#9733; {each.rating}</p>
+                    </div>
+                  </div>
+                  <strong>Description</strong>
+                  <p>{each.job_description}</p>
+                  <div className="job-type-location-type">
+                    <p>
+                      <IoLocation />
+                      {jobData.location}
+                    </p>
+                    <p>
+                      <FaSuitcaseRolling />
+                      {jobData.employment_type}
+                    </p>
+                  </div>
+                </div>
+              </li>
             ))}
           </ul>
         </div>

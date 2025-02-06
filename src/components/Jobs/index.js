@@ -248,6 +248,7 @@ class Jobs extends Component {
           <div className="profile-and-filters-container">
             {this.renderProfile()}
             {/* Employment Type Filters */}
+            <hr />
             <div className="employment-types">
               <h5>Employment Type</h5>
               {['FULLTIME', 'PARTTIME', 'FREELANCE', 'INTERNSHIP'].map(type => (
@@ -264,6 +265,7 @@ class Jobs extends Component {
               ))}
             </div>
             {/* Salary Range Filters */}
+            <hr />
             <div className="salary-range">
               <h3>Salary Range</h3>
               <label>
