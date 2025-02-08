@@ -1,4 +1,7 @@
 import {Link} from 'react-router-dom'
+import {IoHome} from 'react-icons/io5'
+import {GiSuitcase} from 'react-icons/gi'
+import {IoIosLogOut} from 'react-icons/io'
 
 import './index.css'
 
@@ -19,9 +22,24 @@ const Header = () => (
         <li>Jobs</li>
       </Link>
     </ul>
-    <button className="home-btn" type="button">
+    <button className="logout-btn" type="button">
       Logout
     </button>
+    <div className="mobile-view-nav-items">
+      <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
+        <IoHome size={20} />
+      </Link>
+
+      <Link to="/jobs">
+        <GiSuitcase
+          size={25}
+          style={{textDecoration: 'none', color: 'white'}}
+        />
+      </Link>
+      <button type="button" className="mobile-logout-btn">
+        <IoIosLogOut size={25} />
+      </button>
+    </div>
   </div>
 )
 
