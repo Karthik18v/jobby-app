@@ -2,6 +2,7 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import {IoLocation} from 'react-icons/io5'
 import {FaSuitcaseRolling} from 'react-icons/fa'
+import Loader from 'react-loader-spinner'
 import {Link} from 'react-router-dom'
 
 import Header from '../Header'
@@ -218,9 +219,19 @@ class Jobs extends Component {
       />
       <h1>Oops Something Went Wrong</h1>
       <p>We cannot seem to find the page you are looking for.</p>
-      <button type="button" className="failure-btn">
+      <button
+        type="button"
+        className="failure-btn"
+        onClick={this.getJobsDetails}
+      >
         Retry
       </button>
+    </div>
+  )
+
+  renderLoaderView = () => (
+    <div className="loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
     </div>
   )
 
@@ -231,6 +242,8 @@ class Jobs extends Component {
         return this.renderJobSuccessView()
       case apiConstants.failure:
         return this.renderJobFailureView()
+      case apiConstants.pending:
+        return this.renderLoaderView()
 
       default:
         return null

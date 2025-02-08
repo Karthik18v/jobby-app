@@ -1,20 +1,30 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom'
+import Loader from 'react-loader-spinner'
 import {IoLocation} from 'react-icons/io5'
 import {FaSuitcaseRolling, FaExternalLinkAlt} from 'react-icons/fa'
 import Header from '../Header'
 
 import './index.css'
 
+const apiConstants = {
+  initial: 'INITIAL',
+  success: 'SUCCESS',
+  pending: 'PENDING',
+  failure: 'FAILURE',
+}
+
 class SpecificJobs extends Component {
   state = {
     jobData: {},
     similarJobs: [],
+    apiStatus: apiConstants.initial,
   }
 
   componentDidMount() {
     this.getJobDetails()
+    this.setState({apiStatus: apiConstants.pending})
   }
 
   getJobDetails = async () => {
@@ -32,18 +42,54 @@ class SpecificJobs extends Component {
     }
     const response = await fetch(apiUrl, options)
     const data = await response.json()
-    this.setState({jobData: data.job_details, similarJobs: data.similar_jobs})
+    if (response.ok === true) {
+      this.setState({
+        jobData: data.job_details,
+        similarJobs: data.similar_jobs,
+        apiStatus: apiConstants.success,
+      })
+    } else {
+      this.setState({apiStatus: apiConstants.failure})
+    }
   }
 
-  render() {
-    const {jobData, similarJobs} = this.state
-    console.log(similarJobs)
-    const {skills} = jobData
-    console.log(jobData)
+  renderJobFailureView = () => (
+    <div className="job-failure-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
+        alt="failure view"
+        className="failure-img"
+      />
+      <h1>Oops Something Went Wrong</h1>
+      <p>We cannot seem to find the page you are looking for.</p>
+      <button
+        type="button"
+        className="failure-btn"
+        onClick={this.getJobDetails}
+      >
+        Retry
+      </button>
+    </div>
+  )
 
+  renderSpecificJobView = () => {
+    const {apiStatus} = this.state
+    switch (apiStatus) {
+      case apiConstants.success:
+        return this.renderSpecificJobSuccessView()
+      case apiConstants.pending:
+        return this.renderLoaderView()
+      case apiConstants.failure:
+        return this.renderJobFailureView()
+      default:
+        return null
+    }
+  }
+
+  renderSpecificJobSuccessView = () => {
+    const {jobData, skills, similarJobs} = this.state
     return (
-      <div className="specific-job-container">
-        <Header />
+      <>
         <div className="specific-job-card">
           <div className="job-heading">
             <img
@@ -133,6 +179,21 @@ class SpecificJobs extends Component {
             ))}
           </ul>
         </div>
+      </>
+    )
+  }
+
+  renderLoaderView = () => (
+    <div className="loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+    </div>
+  )
+
+  render() {
+    return (
+      <div className="specific-job-container">
+        <Header />
+        {this.renderSpecificJobView()}
       </div>
     )
   }

@@ -65,29 +65,9 @@
   margin-bottom: 10px;
   border-radius: 10px;
 }
-
-@media screen and (max-width: 768px) {
-  .job-container {
-    display: flex;
-    flex-direction: column;
-  }
-  .profile-and-filters-container {
-    width: 100vw;
-    padding: 20px;
-    color: white;
-    align-items: center;
-  }
-  .jobs-list-container {
-    width: 100vw;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .job-card {
-    margin-left: -20px;
-    width: 100%;
-  }
+.loader-container {
+  height: 100%;
+  width: 100%;
 }
 
 .job-card-logo {
@@ -120,9 +100,42 @@
 }
 .failure-img {
   height: 300px;
+  max-width: 300px;
+  width: 80%;
 }
 .job-failure-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: white;
+  padding: 20px;
+}
+@media screen and (max-width: 768px) {
+  .job-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .profile-and-filters-container {
+    width: 100vw;
+    padding: 20px;
+    color: white;
+    align-items: center;
+  }
+  .jobs-list-container {
+    width: 100vw;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .job-card {
+    margin-left: -20px;
+    width: 100%;
+  }
+  .job-failure-container h1 {
+    font-size: 18px;
+  }
+  .job-failure-container p {
+    font-size: 14px;
+  }
 }
